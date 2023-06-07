@@ -1,0 +1,29 @@
+import numpy as np
+import pyaudio
+
+def generate_tone(frequency, duration):
+    sample_rate = 44100  # Sample rate in Hz
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    tone = np.sin(frequency * 2 * np.pi * t)
+    return tone
+
+def play_tone(tone):
+    p = pyaudio.PyAudio()
+    stream = p.open(format=pyaudio.paFloat32,
+                    channels=1,
+                    rate=44100,
+                    output=True)
+    stream.write(tone.astype(np.float32).tobytes())
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+# Example usage
+#frequency = 1000  # Frequency in Hz (A4 note) (default: 440)
+#duration = 2  # Duration in seconds
+
+frequency = int(input("Enter the frequency in hertz: "))
+duration = int(input("How many seconds is the duration? "))
+
+tone = generate_tone(frequency, duration)
+play_tone(tone)
